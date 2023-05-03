@@ -1,89 +1,60 @@
 data "aws_ami" "centos" {
   owners = ["973714476881"]
-  most_recent =true
+  most_recent = true
   name_regex = "Centos-8-Devops-Practice"
 }
-
-output "ami" {
-  value = data.aws_ami.centos.image_id
+data"aws_security_group" "allow-all" {
+  name = "allow-all"
 }
-resource "aws_instance" "frontend" {
-  ami           = "ami-0b5a2b5b8f2be4ec2"
-  instance_type = "t3.micro"
 
-  tags = {
-    Name = "frontend"
+  variable"component" {
+    default = {
+      frontend = {
+    name       = "frontend"
+    instance_type = "t3.micro"
   }
+      mongodb = {
+      name = "mongodb"
+      instance_type = "t3.micro"
+      }
+catalogue = {
+  name = "catalogue"
+  instance_type = "t3.micro"
 }
-resource "aws_instance" "cataloge" {
-  ami           = "ami-0b5a2b5b8f2be4ec2"
+redis = {
+  name = "redis"
   instance_type = "t3.micro"
-
-  tags = {
-    Name = "cataloge"
-  }
 }
-resource "aws_instance" "redis" {
-  ami           = "ami-0b5a2b5b8f2be4ec2"
+user = {
+  name = "user"
   instance_type = "t3.micro"
-
-  tags = {
-    Name = "redis"
-  }
 }
-resource "aws_instance" "mongodb" {
-  ami           = "ami-0b5a2b5b8f2be4ec2"
+cart = {
+  name = "cart"
   instance_type = "t3.micro"
-
-  tags = {
-    Name = "mongodb"
-  }
 }
-resource "aws_instance" "user" {
-  ami           = "ami-0b5a2b5b8f2be4ec2"
+mysql = {
+  name = "mysql"
   instance_type = "t3.micro"
-
-  tags = {
-    Name = "user"
-  }
 }
-resource "aws_instance" "cart" {
-  ami           = "ami-0b5a2b5b8f2be4ec2"
+rabbitmq = {
+  name = "rabbitmq"
   instance_type = "t3.micro"
-
-  tags = {
-    Name = "cart"
-  }
 }
-resource "aws_instance" "mysql" {
-  ami           = "ami-0b5a2b5b8f2be4ec2"
+shipping = {
+  name = "shipping"
   instance_type = "t3.micro"
-
-  tags = {
-    Name = "mysql"
-  }
 }
-resource "aws_instance" "rabbitmq" {
-  ami           = "ami-0b5a2b5b8f2be4ec2"
+payment = {
+  name = "payment"
   instance_type = "t3.micro"
-
-  tags = {
-    Name = "rabbitmq"
-  }
 }
-resource "aws_instance" "shipping" {
-  ami           = "ami-0b5a2b5b8f2be4ec2"
-  instance_type = "t3.micro"
-
-  tags = {
-    Name = "shipping"
-  }
+resource "aws_instance" "instance"
+for_each = var.component
+ami = data.aws_ami.centos.image_id
+instancetype = "each.value"["instance_type"]
+vpc_security_group_ids=[data.aws_security_group.allow-all.id]
+tags = {
+  name = "each.value" ["name"]
 }
-resource "aws_instance" "payment" {
-  ami           = "ami-0b5a2b5b8f2be4ec2"
-  instance_type = "t3.micro"
-
-  tags = {
-    Name = "payment"
-  }
 }
