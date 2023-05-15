@@ -1,5 +1,5 @@
 locals {
-  name = var.env != " " ? "{var.component_nmae}-${var.env}" : var.component_name
+  name = var.env != " " ? "{var.component_name}-${var.env}" : var.component_name
   db_commands = [
   "rm rf roboshop-shell",
   "git clone https://github.com/madhavi924/roboshop-shell",
